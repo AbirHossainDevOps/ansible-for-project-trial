@@ -1,39 +1,66 @@
-- name: Installation Services
+- name: Installation packages and services for DB server
   yum:
-    name:
-    - libselinux-python
-    - libsemanage-python
-    - mariadb-server
-    - MySQL-python
-    - php-mysql
+    name: '{{ item }}'
     state: installed
-  tags: install
+  loop: '{{ packages }}'
+  tags: installation
+
 - name: Start firewalld
-  service: name=firewalld state=started enabled=yes
-  tags: start firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+  tags: started firewalld
+
 - name: Insert firewalld rule for mysql
-  firewalld: port={{ mysql_port }}/tcp permanent=true state=enabled immediate=yes
-  tags: enable mysql port
+  firewalld:
+    port: '{{ mysql_port }}/tcp'
+    permanent: true
+    immediate: true
+    state: enabled
+  tags: open port for mysql
+
 - name: Restart firewalld
-  service: name=firewalld state=reloaded enabled=yes
+  service: 
+    name: firewalld 
+    state: reloaded 
+    enabled: true
   tags: restarted firewalld
-- name: Copy Mysql configuration file
-  copy: src=files/my.cnf dest=/etc/my.cnf
+
+- name: Copy mysql configuration file
+  copy: 
+    src: files/my.cnf 
+    dest: /etc/my.cnf
   tags: mysql conf copy
-- name: Start MariaDB Service
-  service: name=mariadb state=started enabled=yes
-  tags: start mariadb
+
+- name: Start MariaDB service
+  service: 
+    name: mariadb 
+    state: started 
+    enabled: true
+  tags: started mariadb
+
 - name: Create Application Database
-  mysql_db: name={{ dbname }} state=present
-  tags: create database
+  mysql_db: 
+    name: '{{ dbname }}'
+    state: present
+  tags: created database
+
 - name: Create Application DB User
-  mysql_user: name={{ dbuser }} password={{ dbpassword }} priv=*.*:ALL host='192.168.20.124' state=present
-  tags: create user
+  mysql_user: 
+    name: '{{ dbuser }}'
+    password: '{{ dbpassword }}'
+    priv: '*.*:ALL'
+    host: '192.168.20.124' 
+    state: present
+  tags: created user
+
 - name: Move db-load-script to db host
   copy:
     src: files/db-load-script.sql
     dest: /tmp/db-load-script.sql
   tags: copy sql
+
 - name: Load Inventory Data
   shell: mysql -f < /tmp/db-load-script.sql
   tags: run sql

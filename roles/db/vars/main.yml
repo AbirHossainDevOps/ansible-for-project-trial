@@ -1,5 +1,11 @@
 ---
+packages:
+  - libselinux-python
+  - libsemanage-python
+  - mariadb-server
+  - MySQL-python
+  - php-mysql
 mysql_port: 3306
 dbname: library
-dbuser: ecomuser
-dbpassword: ecompassword
+dbuser: librarian
+dbpassword: librarypass
