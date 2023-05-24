@@ -42,11 +42,16 @@
     state: started
   tags: started apache
 
+
 - name: Copy the code from repository
-  git: 
-    repo: '{{ repository }}' 
-    dest: /var/www/html/ 
-    force: yes
-  tags: clone repo
+  copy: 
+    src: /var/lib/jenkins/workspace/trial
+    dest: /var/www/html/
+    force: true
+  tags: copy repo
 
-
+# - name: Copy the code from repository
+#   synchronize: 
+#     src: /var/lib/jenkins/workspace/trial
+#     dest: rsync://var/www/html/ 
+#   tags: copy repo

@@ -9,3 +9,4 @@ mysql_port: 3306
 dbname: library
 dbuser: librarian
 dbpassword: librarypass
+sql_host: 192.168.20.124

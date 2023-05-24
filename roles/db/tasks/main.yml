@@ -51,7 +51,7 @@
     name: '{{ dbuser }}'
     password: '{{ dbpassword }}'
     priv: '*.*:ALL'
-    host: '192.168.20.124' 
+    host: '{{ sql_host }}' 
     state: present
   tags: created user
 
